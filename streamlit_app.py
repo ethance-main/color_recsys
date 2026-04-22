@@ -1,11 +1,11 @@
 import random
 import json
+import os
 import streamlit as st
 import pandas as pd
 from streamlit_star_rating import st_star_rating
 import gspread
 from google.oauth2.service_account import Credentials
-#testing
 # Load colors data from JSON
 with open("colors_data.json", "r") as f:
     data = json.load(f)
@@ -16,10 +16,15 @@ scope = [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive'
 ]
-creds = Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
-    scopes=scope
-)
+
+# Use local credentials.json if it exists, otherwise use Streamlit secrets
+if os.path.exists("credentials.json"):
+    with open("credentials.json", "r") as f:
+        service_account_info = json.load(f)
+else:
+    service_account_info = st.secrets["gcp_service_account"]
+
+creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
 client = gspread.authorize(creds)
 sheet = client.open("Color Ratings").sheet1
     
