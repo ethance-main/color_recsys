@@ -21,8 +21,11 @@ scope = [
 if os.path.exists("credentials.json"):
     with open("credentials.json", "r") as f:
         service_account_info = json.load(f)
-else:
+elif "gcp_service_account" in st.secrets:
     service_account_info = st.secrets["gcp_service_account"]
+else:
+    st.error("Google Sheets credentials not configured. Please add credentials.json locally or configure secrets in Streamlit Cloud.")
+    st.stop()
 
 creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
 client = gspread.authorize(creds)
@@ -50,7 +53,7 @@ with st.form("color_quiz"):
             f"<div style='width:100px;height:100px;background-color:{color_box}'></div>",
             unsafe_allow_html=True
         )
-        stars = st_star_rating(f"Rating for Color {i+1}", max_stars=10, defaultValue=5, key=f"rating_{color_id}")
+        stars = st_star_rating(f"Rating for Color {i+1}", maxValue=10, defaultValue=5, key=f"rating_{color_id}")
         # Keep color_id with rating as key-value pair
         responses.append((color_id, stars))
     submitted = st.form_submit_button("Submit Ratings")
