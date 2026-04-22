@@ -42,6 +42,9 @@ if "sample" not in st.session_state:
 sample = st.session_state.sample
 
 with st.form("color_quiz"):
+    st.markdown("### Instructions")
+    st.markdown("Rate how much you like each color on a scale of 1-10 stars. Colors are randomly sampled each time you submit, so feel free to submit multiple times to rate more colors!")
+    
     responses = []
     for i, (color_id, color_str) in enumerate(sample):
         # Parse for display
@@ -50,13 +53,17 @@ with st.form("color_quiz"):
         color_box = f"rgb({r},{g},{b})"
     
         st.markdown(
-            f"<div style='width:100px;height:100px;background-color:{color_box}'></div>",
+            f"<div style='display:flex;justify-content:center;align-items:center;'>"
+            f"<div style='width:150px;height:150px;background-color:{color_box};border-radius:10px;border:2px solid #333;'></div>"
+            f"</div>",
             unsafe_allow_html=True
         )
-        stars = st_star_rating(f"Rating for Color {i+1}", maxValue=10, defaultValue=5, key=f"rating_{color_id}")
+        stars = st_star_rating(f"How much do you like Color {i+1}?", maxValue=10, defaultValue=1, key=f"rating_{color_id}")
         # Keep color_id with rating as key-value pair
         responses.append((color_id, stars))
-    submitted = st.form_submit_button("Submit Ratings")
+    
+    # Disable submit button if already submitted
+    submitted = st.form_submit_button("Submit Ratings", disabled=st.session_state.get("submitted", False))
 
 if submitted:
     df = pd.DataFrame(responses, columns=['color_id', 'rating'])
@@ -78,8 +85,8 @@ if submitted:
     # Append the full row to Google Sheets
     sheet.append_row(full_row)
     
-    st.success("Ratings submitted successfully!")
+    # Mark as submitted to disable button
+    st.session_state["submitted"] = True
     
-    # Reset the sample to generate new random colors for next submission
-    del st.session_state["sample"]
-    st.rerun()
+    st.success("Thank you for your ratings!")
+    st.markdown("You may close this window now.")
