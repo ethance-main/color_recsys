@@ -45,25 +45,28 @@ with st.form("color_quiz"):
     st.markdown("### Instructions")
     st.markdown("Rate how much you like each color on a scale of 1-10 stars. Colors are randomly sampled each time you submit, so feel free to submit multiple times to rate more colors!")
     
-    responses = []
-    for i, (color_id, color_str) in enumerate(sample):
-        # Parse for display
-        rgb = color_str.strip("[]").split(",")
-        r, g, b = int(rgb[0]), int(rgb[1]), int(rgb[2])
-        color_box = f"rgb({r},{g},{b})"
-    
-        st.markdown(
-            f"<div style='display:flex;justify-content:center;align-items:center;'>"
-            f"<div style='width:150px;height:150px;background-color:{color_box};border-radius:10px;border:2px solid #333;'></div>"
-            f"</div>",
-            unsafe_allow_html=True
-        )
-        stars = st_star_rating(f"How much do you like Color {i+1}?", maxValue=10, defaultValue=1, key=f"rating_{color_id}")
-        # Keep color_id with rating as key-value pair
-        responses.append((color_id, stars))
-    
-    # Disable submit button if already submitted
-    submitted = st.form_submit_button("Submit Ratings", disabled=st.session_state.get("submitted", False))
+    # Check if already submitted - if so, skip the form entirely
+    if not st.session_state.get("submitted", False):
+        responses = []
+        for i, (color_id, color_str) in enumerate(sample):
+            # Parse for display
+            rgb = color_str.strip("[]").split(",")
+            r, g, b = int(rgb[0]), int(rgb[1]), int(rgb[2])
+            color_box = f"rgb({r},{g},{b})"
+        
+            st.markdown(
+                f"<div style='display:flex;justify-content:center;align-items:center;'>"
+                f"<div style='width:150px;height:150px;background-color:{color_box};border-radius:10px;border:2px solid #333;'></div>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
+            stars = st_star_rating(f"How much do you like Color {i+1}?", maxValue=10, defaultValue=1, key=f"rating_{color_id}")
+            # Keep color_id with rating as key-value pair
+            responses.append((color_id, stars))
+        
+        submitted = st.form_submit_button("Submit Ratings")
+    else:
+        submitted = False
 
 if submitted:
     df = pd.DataFrame(responses, columns=['color_id', 'rating'])
