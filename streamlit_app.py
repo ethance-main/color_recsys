@@ -6,6 +6,7 @@ import pandas as pd
 from streamlit_star_rating import st_star_rating
 import gspread
 from google.oauth2.service_account import Credentials
+
 # Load colors data from JSON
 with open("colors_data.json", "r") as f:
     data = json.load(f)
