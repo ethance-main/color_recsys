@@ -11,6 +11,8 @@ scope = [
     'https://www.googleapis.com/auth/drive'
 ]
 
+# VERSION 0.9 BETA
+
 # REQUIRES: credentials.json with appropriate permissions to access Google Sheets API
 # MODIFIES: Google Sheet "Color Ratings" by adding two rows - one with all 125 colors
 #  as [r,g,b] strings, and one with all color IDs (0-124)

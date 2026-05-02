@@ -2,6 +2,8 @@
 import pandas as pd
 import gsheets
 
+# VERSION 0.9 BETA
+
 # REQUIRES: responses.csv
 # MODIFIES: None
 # EFFECTS: Returns dataframe with all user ratings from the CSV file. Each row is a user, each column is an item, and values are ratings (0 if not rated).
