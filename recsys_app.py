@@ -46,7 +46,7 @@ with st.form("color_ratings"):
             f"</div>",
             unsafe_allow_html=True
         )
-        rating = st_star_rating(f"Rate Color {i+1}", maxValue=10, defaultValue=5, key=f"rating_{color_id}")
+        rating = st_star_rating(f"Rate Color {i+1}", maxValue=5, defaultValue=0, key=f"rating_{color_id}")
         responses.append((color_id, rating))
 
     submitted = st.form_submit_button("Submit Ratings")
