@@ -7,7 +7,7 @@ from streamlit_star_rating import st_star_rating
 import gspread
 from google.oauth2.service_account import Credentials
 
-# VERSION 0.9 BETA
+# VERSION 0.9.1 BETA
 
 # Load colors data from JSON
 with open("colors_data.json", "r") as f:
@@ -46,7 +46,7 @@ sample = st.session_state.sample
 
 with st.form("color_quiz"):
     st.markdown("### Instructions")
-    st.markdown("Rate how much you like each color on a scale of 1-10 stars: 1 star = not appealing, 10 stars = very appealing. Colors are randomly sampled each time you submit, so feel free to submit multiple times to rate more colors!")
+    st.markdown("Rate how much you like each color on a scale of 1-5 stars: 1 star = not appealing, 5 stars = very appealing. Colors are randomly sampled each time you submit, so feel free to submit multiple times to rate more colors!")
     
     # Check if already submitted - if so, skip the form entirely
     if not st.session_state.get("submitted", False):
@@ -63,7 +63,7 @@ with st.form("color_quiz"):
                 f"</div>",
                 unsafe_allow_html=True
             )
-            stars = st_star_rating(f"How much do you like Color {i+1}?", maxValue=10, defaultValue=5, key=f"rating_{color_id}")
+            stars = st_star_rating(f"How much do you like Color {i+1}?", maxValue=5, defaultValue=0, key=f"rating_{color_id}")
             # Keep color_id with rating as key-value pair
             responses.append((color_id, stars))
         
